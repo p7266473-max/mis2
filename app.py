@@ -402,7 +402,17 @@ elif app_mode == "6. Talk to a Survivor":
 
                         # Implement smolagents integration
                         try:
-                            from smolagents import CodeAgent, Tool
+                            from smolagents import CodeAgent, Tool, LiteLLMModel
+                            
+                            # Map the discovered Gemini model to LiteLLM configuration for smolagents
+                            # e.g., selected_model = "models/gemini-1.5-flash" -> gemini/gemini-1.5-flash
+                            lite_model_name = selected_model.replace("models/", "gemini/")
+                            
+                            # Initialize LiteLLM model using the key
+                            agent_model = LiteLLMModel(
+                                model_id=lite_model_name,
+                                api_key=api_key
+                            )
 
                             # Define tools for the agent to query the system state
                             class GetGoldPriceTool(Tool):
@@ -433,28 +443,35 @@ elif app_mode == "6. Talk to a Survivor":
                             # Create agent instance
                             agent = CodeAgent(
                                 tools=[GetGoldPriceTool(), GetPricingFormulaTool()],
-                                model=None, # will fall back to local direct executions
+                                model=agent_model,
                                 additional_authorized_imports=["pandas", "numpy"]
                             )
 
-                            # Process query using agent reasoning logs internally
+                            # Build complete instruction payload
                             prompt_with_instructions = (
                                 f"You are a survivor speaking to a visitor. Stay in character.\n"
                                 f"System Guidelines:\n{system_prompt}\n\n"
                                 f"Query: {user_input}"
                             )
-                        except Exception:
-                            # fallback to direct generative model if smolagents fails to load
-                            pass
+                            
+                            # Run reasoning loop
+                            reply = agent.run(prompt_with_instructions)
+                            st.write(reply)
 
-                        # Start chat with loaded history
-                        chat = model.start_chat(history=history_payload)
-                        response = chat.send_message(
-                            user_input,
-                            generation_config={"temperature": 0.7, "max_output_tokens": 300}
-                        )
-                        reply = response.text
-                        st.write(reply)
+                        except Exception as agent_error:
+                            # fallback to direct generative model if smolagents fails to load
+                            model = genai.GenerativeModel(
+                                model_name=selected_model,
+                                system_instruction=system_prompt
+                            )
+                            # Start chat with loaded history
+                            chat = model.start_chat(history=history_payload)
+                            response = chat.send_message(
+                                user_input,
+                                generation_config={"temperature": 0.7, "max_output_tokens": 300}
+                            )
+                            reply = response.text
+                            st.write(reply)
                 
                 # Append assistant reply
                 st.session_state.messages.append({"role": "assistant", "content": reply})
