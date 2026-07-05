@@ -403,59 +403,66 @@ elif app_mode == "6. Talk to a Survivor":
                         # Implement smolagents integration
                         try:
                             from smolagents import CodeAgent, Tool, LiteLLMModel
+                            import io
+                            import contextlib
                             
-                            # Map the discovered Gemini model to LiteLLM configuration for smolagents
-                            # e.g., selected_model = "models/gemini-1.5-flash" -> gemini/gemini-1.5-flash
-                            lite_model_name = selected_model.replace("models/", "gemini/")
-                            
-                            # Initialize LiteLLM model using the key
-                            agent_model = LiteLLMModel(
-                                model_id=lite_model_name,
-                                api_key=api_key
-                            )
+                            # Cache the agent instance in session state for conversational persistence
+                            if "code_agent" not in st.session_state:
+                                lite_model_name = selected_model.replace("models/", "gemini/")
+                                agent_model = LiteLLMModel(
+                                    model_id=lite_model_name,
+                                    api_key=api_key
+                                )
 
-                            # Define tools for the agent to query the system state
-                            class GetGoldPriceTool(Tool):
-                                name = "get_current_gold_price"
-                                description = "Retrieves the active gold index price per troy ounce for the current simulation year."
-                                inputs = {}
-                                output_type = "string"
+                                class GetGoldPriceTool(Tool):
+                                    name = "get_current_gold_price"
+                                    description = "Retrieves the active gold index price per troy ounce for the current simulation year."
+                                    inputs = {}
+                                    output_type = "string"
 
-                                def forward(self):
-                                    return f"The current active gold index price is ${year_gold_val:.2f} per troy ounce for the simulation year {sim_year_ctx}."
+                                    def forward(self):
+                                        return f"The current active gold index price is ${year_gold_val:.2f} per troy ounce for the simulation year {sim_year_ctx}."
 
-                            class GetPricingFormulaTool(Tool):
-                                name = "get_pricing_formula_details"
-                                description = "Returns the mathematical formula parameters and descriptions of the multipliers (Wr, Ws, Wt, We)."
-                                inputs = {}
-                                output_type = "string"
+                                class GetPricingFormulaTool(Tool):
+                                    name = "get_pricing_formula_details"
+                                    description = "Returns the mathematical formula parameters and descriptions of the multipliers (Wr, Ws, Wt, We)."
+                                    inputs = {}
+                                    output_type = "string"
 
-                                def forward(self):
-                                    return (
-                                        "Pricing Formula: Price = Base Price * GRI * (Wr * Ws * Wt * We)\n"
-                                        "Multiplier Parameters:\n"
-                                        "- Wr: Regional Weight (Drought factor)\n"
-                                        "- Ws: Seasonal Weight (Harvest cycle alignment)\n"
-                                        "- Wt: Kingdom Tax Weight (non-essential services surcharge)\n"
-                                        "- We: Emergency Weight (anti-hoarding/rationing adjustments)"
-                                    )
+                                    def forward(self):
+                                        return (
+                                            "Pricing Formula: Price = Base Price * GRI * (Wr * Ws * Wt * We)\n"
+                                            "Multiplier Parameters:\n"
+                                            "- Wr: Regional Weight (Drought factor)\n"
+                                            "- Ws: Seasonal Weight (Harvest cycle alignment)\n"
+                                            "- Wt: Kingdom Tax Weight (non-essential services surcharge)\n"
+                                            "- We: Emergency Weight (anti-hoarding/rationing adjustments)"
+                                        )
 
-                            # Create agent instance
-                            agent = CodeAgent(
-                                tools=[GetGoldPriceTool(), GetPricingFormulaTool()],
-                                model=agent_model,
-                                additional_authorized_imports=["pandas", "numpy"]
-                            )
+                                st.session_state.code_agent = CodeAgent(
+                                    tools=[GetGoldPriceTool(), GetPricingFormulaTool()],
+                                    model=agent_model,
+                                    additional_authorized_imports=["pandas", "numpy"]
+                                )
 
-                            # Build complete instruction payload
                             prompt_with_instructions = (
                                 f"You are a survivor speaking to a visitor. Stay in character.\n"
                                 f"System Guidelines:\n{system_prompt}\n\n"
                                 f"Query: {user_input}"
                             )
                             
-                            # Run reasoning loop
-                            reply = agent.run(prompt_with_instructions)
+                            # Capture agent logs dynamically to show the students the agentic thought steps
+                            log_capture = io.StringIO()
+                            with contextlib.redirect_stdout(log_capture):
+                                reply = st.session_state.code_agent.run(prompt_with_instructions)
+                            
+                            agent_logs = log_capture.getvalue()
+                            
+                            # Render logs in expander
+                            if agent_logs.strip():
+                                with st.expander("🕵️ Inspect Survivor's Agentic Thought Process"):
+                                    st.text(agent_logs)
+                                    
                             st.write(reply)
 
                         except Exception as agent_error:
@@ -477,7 +484,7 @@ elif app_mode == "6. Talk to a Survivor":
                 st.session_state.messages.append({"role": "assistant", "content": reply})
 
         except Exception as e:
-            st.error(f"Error communicating with Gemini API: {e}")
+            st.error("⚠️ The Mesh Network is struggling to sync with the central database. The solar grids might be undergoing scheduled runtime downtime. Please try your query again when the signal stabilizes.")
     else:
         st.info("Please enter your Gemini API Key in the box above to enable conversational simulation.")
 
