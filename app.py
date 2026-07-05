@@ -357,9 +357,23 @@ elif app_mode == "6. Talk to a Survivor":
                 # Query Gemini using the legacy SDK structures
                 with st.chat_message("assistant"):
                     with st.spinner("The survivor is replying..."):
-                        # Initialize without enforcing models explicitly
+                        # Dynamically discover the best model allowed by this API key
+                        try:
+                            models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+                            # Pick the first flash model or fall back to gemini-1.5-flash-latest
+                            selected_model = next((m for m in models if "gemini-1.5-flash" in m), None)
+                            if not selected_model:
+                                selected_model = models[0] if models else "models/gemini-1.5-flash-latest"
+                        except Exception:
+                            # Fallback if list_models fails due to key scope restrictions
+                            selected_model = "models/gemini-1.5-flash-latest"
+
+                        # Ensure correct format (models/ prefix is needed for legacy backend call routes)
+                        if not selected_model.startswith("models/"):
+                            selected_model = f"models/{selected_model}"
+
                         model = genai.GenerativeModel(
-                            model_name='gemini-1.5-flash',
+                            model_name=selected_model,
                         )
                         response = model.generate_content(
                             f"System Instruction: {system_prompt}\n\nUser Query: {user_input}",
