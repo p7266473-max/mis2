@@ -154,6 +154,59 @@ elif app_mode == "3. Monetary System (GRI)":
         "Daily Step (200 Working Days)": "${:.6f}"
     }), use_container_width=True)
 
+    # 365 Days Daily Interpolation Generator Section
+    st.write("---")
+    st.write("### 📅 7-Year Calendar Daily Gold Price Interpolation Generator (365-day basis)")
+    st.write("""
+    Generate the linear interpolation for every single calendar day from **January 1, 2029** to **December 31, 2035** (7 years = 2,556 total days).
+    This simulates how local databases automatically compute the day-to-day index step scaling factors.
+    """)
+
+    if st.button("Generate Full Daily Interpolation Ledger (2,556 Days)"):
+        # Generate full date index
+        date_range = pd.date_range(start="2029-01-01", end="2035-12-31", freq="D")
+        
+        # Populate DataFrame with dates and anchor values
+        df_full = pd.DataFrame(index=date_range)
+        df_full["Gold Price (USD/oz)"] = np.nan
+        
+        # Assign baseline anchors on Jan 1st of each year
+        df_full.loc["2029-01-01", "Gold Price (USD/oz)"] = 271.04
+        df_full.loc["2030-01-01", "Gold Price (USD/oz)"] = 309.68
+        df_full.loc["2031-01-01", "Gold Price (USD/oz)"] = 363.32
+        df_full.loc["2032-01-01", "Gold Price (USD/oz)"] = 409.17
+        df_full.loc["2033-01-01", "Gold Price (USD/oz)"] = 444.45
+        df_full.loc["2034-01-01", "Gold Price (USD/oz)"] = 603.77
+        df_full.loc["2035-01-01", "Gold Price (USD/oz)"] = 695.39
+        df_full.loc["2035-12-31", "Gold Price (USD/oz)"] = 695.39  # Fill last date anchor
+        
+        # Linearly interpolate NaN values
+        df_full["Gold Price (USD/oz)"] = df_full["Gold Price (USD/oz)"].interpolate(method="linear")
+        
+        # Formatting output
+        df_full.index.name = "Date"
+        df_display = df_full.reset_index()
+        df_display["Date"] = df_display["Date"].dt.strftime('%Y-%m-%d')
+        
+        st.success("Successfully interpolated 2,556 days of data!")
+        
+        # Display sample and download link
+        st.write("#### Data Sample (First 20 Days):")
+        st.dataframe(df_display.head(20).style.format({"Gold Price (USD/oz)": "${:.4f}"}))
+        
+        st.write("#### Data Sample (Last 20 Days):")
+        st.dataframe(df_display.tail(20).style.format({"Gold Price (USD/oz)": "${:.4f}"}))
+
+        # Enable CSV download
+        csv = df_display.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="Download Full 7-Year Ledger CSV",
+            data=csv,
+            file_name="survivors_nation_gold_7year_interpolation.csv",
+            mime="text/csv",
+        )
+
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 4. PRICING SIMULATOR
