@@ -118,10 +118,21 @@ elif app_mode == "3. Monetary System (GRI)":
     with col2:
         st.write("#### Permanent Exchange Rates (Locked Jan 1, 2001)")
         fx_rates = {
-            "Currency": ["USD (US Dollar)", "EUR (Euro)", "GBP (British Pound)", "INR (Indian Rupee)"],
-            "Fixed Rate to USD": [1.0000, 1.0747, 1.4930, 46.72]
+            "Currency Code": ["USD", "EUR", "GBP", "INR", "CAD", "JPY", "AUD", "SGD", "CHF", "CNY", "MYR", "HKD", "BRL", "MXN", "NZD", "NOK", "SEK", "THB", "ZAR", "KRW"],
+            "Currency Name": [
+                "US Dollar", "Euro (EMU)", "British Pound", "Indian Rupee", "Canadian Dollar",
+                "Japanese Yen", "Australian Dollar", "Singapore Dollar", "Swiss Franc", "Chinese Yuan",
+                "Malaysian Ringgit", "Hong Kong Dollar", "Brazilian Real", "Mexican Peso", "New Zealand Dollar",
+                "Norwegian Krone", "Swedish Krona", "Thai Baht", "South African Rand", "South Korean Won"
+            ],
+            "Fixed Rate (per USD)": [
+                1.0000, 0.9374, 0.6814, 46.5500, 1.5037,
+                117.2800, 1.8021, 1.7338, 1.6390, 8.2766,
+                3.8000, 7.7997, 1.9540, 9.9720, 2.2472,
+                8.7675, 9.5050, 43.0900, 7.8250, 1283.8000
+            ]
         }
-        st.table(pd.DataFrame(fx_rates))
+        st.dataframe(pd.DataFrame(fx_rates), height=250)
 
     # New section: Dynamic LBMA Gold Price Interpolation table
     st.write("---")
@@ -159,7 +170,11 @@ elif app_mode == "3. Monetary System (GRI)":
     st.write("### 📅 7-Year Calendar Daily Gold Price Interpolation Generator (365-day basis)")
     st.write("""
     Generate the linear interpolation for every single calendar day from **January 1, 2029** to **December 31, 2035** (7 years = 2,556 total days).
-    This simulates how local databases automatically compute the day-to-day index step scaling factors.
+    This simulates how local databases automatically compute the day-to-day index step scaling factors across multiple mass units:
+    * **Troy Ounce (oz):** The standard pre-collapse pricing unit.
+    * **Gram (g):** Standard scientific unit (`1 troy ounce = 31.1034768 grams`).
+    * **Pound (lb):** Common weight unit (`1 troy ounce = 0.06857143 pounds avdp`).
+    * **Pawn (Sovereign/Don/Tol - Local Unit):** Mapped for local trading systems (`1 troy ounce = 3.8879346 pawns / sovereigns`).
     """)
 
     if st.button("Generate Full Daily Interpolation Ledger (2,556 Days)"):
@@ -183,28 +198,44 @@ elif app_mode == "3. Monetary System (GRI)":
         # Linearly interpolate NaN values
         df_full["Gold Price (USD/oz)"] = df_full["Gold Price (USD/oz)"].interpolate(method="linear")
         
+        # Calculate auxiliary metrics for weight units
+        df_full["Gold Price (USD/g)"] = df_full["Gold Price (USD/oz)"] / 31.1034768
+        df_full["Gold Price (USD/lb)"] = df_full["Gold Price (USD/oz)"] / 14.5833  # lb troy
+        df_full["Gold Price (USD/pawn)"] = df_full["Gold Price (USD/oz)"] / 3.8879346
+        
         # Formatting output
         df_full.index.name = "Date"
         df_display = df_full.reset_index()
         df_display["Date"] = df_display["Date"].dt.strftime('%Y-%m-%d')
         
-        st.success("Successfully interpolated 2,556 days of data!")
+        st.success("Successfully interpolated 2,556 days of data across all weights!")
         
         # Display sample and download link
         st.write("#### Data Sample (First 20 Days):")
-        st.dataframe(df_display.head(20).style.format({"Gold Price (USD/oz)": "${:.4f}"}))
+        st.dataframe(df_display.head(20).style.format({
+            "Gold Price (USD/oz)": "${:.4f}",
+            "Gold Price (USD/g)": "${:.4f}",
+            "Gold Price (USD/lb)": "${:.4f}",
+            "Gold Price (USD/pawn)": "${:.4f}"
+        }))
         
         st.write("#### Data Sample (Last 20 Days):")
-        st.dataframe(df_display.tail(20).style.format({"Gold Price (USD/oz)": "${:.4f}"}))
+        st.dataframe(df_display.tail(20).style.format({
+            "Gold Price (USD/oz)": "${:.4f}",
+            "Gold Price (USD/g)": "${:.4f}",
+            "Gold Price (USD/lb)": "${:.4f}",
+            "Gold Price (USD/pawn)": "${:.4f}"
+        }))
 
         # Enable CSV download
         csv = df_display.to_csv(index=False).encode('utf-8')
         st.download_button(
             label="Download Full 7-Year Ledger CSV",
             data=csv,
-            file_name="survivors_nation_gold_7year_interpolation.csv",
+            file_name="survivors_nation_gold_7year_units_interpolation.csv",
             mime="text/csv",
         )
+
 
 
 
