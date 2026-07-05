@@ -123,6 +123,38 @@ elif app_mode == "3. Monetary System (GRI)":
         }
         st.table(pd.DataFrame(fx_rates))
 
+    # New section: Dynamic LBMA Gold Price Interpolation table
+    st.write("---")
+    st.write("### 📈 Dynamic LBMA Gold Price Interpolation Table")
+    st.write("""
+    This table displays the master calculation schedule used by the Monetary Authority. 
+    The gold price for January 1 of each year is set to the historical LBMA annual average. 
+    The difference is divided by **200 working days** (excluding weekends) to calculate the daily step change used for dynamic calculation.
+    """)
+
+    # Interpolation data
+    lbma_data = [
+        {"Sim Year": 2029, "Ref Year": 2001, "Gold Price (USD/oz)": 271.04},
+        {"Sim Year": 2030, "Ref Year": 2002, "Gold Price (USD/oz)": 309.68},
+        {"Sim Year": 2031, "Ref Year": 2003, "Gold Price (USD/oz)": 363.32},
+        {"Sim Year": 2032, "Ref Year": 2004, "Gold Price (USD/oz)": 409.17},
+        {"Sim Year": 2033, "Ref Year": 2005, "Gold Price (USD/oz)": 444.45},
+        {"Sim Year": 2034, "Ref Year": 2006, "Gold Price (USD/oz)": 603.77},
+        {"Sim Year": 2035, "Ref Year": 2007, "Gold Price (USD/oz)": 695.39},
+    ]
+    
+    # Calculate difference and daily step using pandas
+    df_lbma = pd.DataFrame(lbma_data)
+    df_lbma["Year Diff (USD)"] = df_lbma["Gold Price (USD/oz)"].diff().fillna(0.0)
+    df_lbma["Daily Step (200 Working Days)"] = df_lbma["Year Diff (USD)"] / 200.0
+
+    st.dataframe(df_lbma.style.format({
+        "Gold Price (USD/oz)": "${:.2f}",
+        "Year Diff (USD)": "${:.2f}",
+        "Daily Step (200 Working Days)": "${:.6f}"
+    }), use_container_width=True)
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # 4. PRICING SIMULATOR
 # ─────────────────────────────────────────────────────────────────────────────
