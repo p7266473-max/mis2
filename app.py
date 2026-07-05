@@ -357,29 +357,14 @@ elif app_mode == "6. Talk to a Survivor":
                 # Query Gemini using the legacy SDK structures
                 with st.chat_message("assistant"):
                     with st.spinner("The survivor is replying..."):
-                        # Try fallback models for older/restricted API keys
-                        models_to_try = ['gemini-1.5-flash', 'gemini-pro', 'gemini-1.0-pro']
-                        response = None
-                        last_err = None
-                        
-                        for m_name in models_to_try:
-                            try:
-                                model = genai.GenerativeModel(
-                                    model_name=m_name,
-                                    system_instruction=system_prompt
-                                )
-                                response = model.generate_content(
-                                    user_input,
-                                    generation_config={"temperature": 0.7, "max_output_tokens": 300}
-                                )
-                                break
-                            except Exception as model_err:
-                                last_err = model_err
-                                continue
-                        
-                        if not response:
-                            raise last_err
-                            
+                        # Initialize without enforcing models explicitly
+                        model = genai.GenerativeModel(
+                            model_name='gemini-1.5-flash',
+                        )
+                        response = model.generate_content(
+                            f"System Instruction: {system_prompt}\n\nUser Query: {user_input}",
+                            generation_config={"temperature": 0.7, "max_output_tokens": 300}
+                        )
                         reply = response.text
                         st.write(reply)
                 
