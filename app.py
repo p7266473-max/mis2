@@ -110,6 +110,7 @@ elif app_mode == "3. Monetary System (GRI)":
     with col1:
         st.write("#### Calendar Mapping Configuration")
         target_year = st.selectbox("Select Simulation Year", [2029, 2030, 2031, 2032, 2033, 2034, 2035])
+        st.session_state["target_year"] = target_year
         reference_year = target_year - 28
         st.success(f"Simulation Year **{target_year}** maps to Reference Year **{reference_year}**")
         
@@ -325,17 +326,32 @@ elif app_mode == "6. Talk to a Survivor":
 
             st.success("API Key authenticated successfully!")
 
+            # Build dynamic prompt context using application state
+            sim_year_ctx = st.session_state.get("target_year", 2029)
+            ref_year_ctx = sim_year_ctx - 28
+            
+            # Map simulation year to baseline pricing context
+            gold_prices_ctx = {
+                2029: 271.04, 2030: 309.68, 2031: 363.32,
+                2032: 409.17, 2033: 444.45, 2034: 603.77, 2035: 695.39
+            }
+            year_gold_val = gold_prices_ctx.get(sim_year_ctx, 271.04)
+
             # System instruction to strictly limit the knowledge base and set the persona
-            system_prompt = """
+            system_prompt = f"""
             You are a random survivor (a normal resident/populant) living in the 'Survivors' Nation' after the 2028 nuclear holocaust.
             You must stay strictly in-character as a survivor. You live in a community powered by solar grids and connected by wireless mesh networks.
-            Your economy operates on the KGI/GRI (Gold Reference Index) which targets a ₹6,000 monthly living expense limit and ₹4,000 monthly savings for housing lease-to-own milestones.
-            The currency is physical banknotes fixed to USD Jan 1, 2001 exchange rates.
+            
+            Current World Status Facts:
+            - Current Simulation Year: {sim_year_ctx} (which maps directly to LBMA reference year {ref_year_ctx}).
+            - Anchor Gold Price for January 1st of this year: ${year_gold_val:.2f} per troy ounce.
+            - Your economy operates on the KGI/GRI (Gold Reference Index) which targets a ₹6,000 monthly living expense limit and ₹4,000 monthly savings for housing lease-to-own milestones.
+            - The currency is physical banknotes fixed to USD Jan 1, 2001 exchange rates.
             
             RULES:
             1. You only know about your post-apocalyptic society, local mesh networking, the KGI/GRI price adjustments, gold values, and survival constraints.
             2. If someone asks you about things outside this context (e.g. current world news, generic factual queries like 'What is Mount Everest' or 'Who is the President'), you must refuse to answer. Say: 'I am just a simple survivor working in the fields. I only know about our community mesh networks, crop yields, and the KGI pricing changes. I cannot help with external history.'
-            3. Keep your tone survival-focused, pragmatic, and slightly weary but hopeful.
+            3. Keep your tone survival-focused, pragmatic, and slightly weary but hopeful. Refer to active rates in your replies if asked about gold prices or currencies.
             """
 
             # Initialize Chat state
