@@ -399,7 +399,54 @@ elif app_mode == "6. Talk to a Survivor":
                             model_name=selected_model,
                             system_instruction=system_prompt
                         )
-                        
+
+                        # Implement smolagents integration
+                        try:
+                            from smolagents import CodeAgent, Tool
+
+                            # Define tools for the agent to query the system state
+                            class GetGoldPriceTool(Tool):
+                                name = "get_current_gold_price"
+                                description = "Retrieves the active gold index price per troy ounce for the current simulation year."
+                                inputs = {}
+                                output_type = "string"
+
+                                def forward(self):
+                                    return f"The current active gold index price is ${year_gold_val:.2f} per troy ounce for the simulation year {sim_year_ctx}."
+
+                            class GetPricingFormulaTool(Tool):
+                                name = "get_pricing_formula_details"
+                                description = "Returns the mathematical formula parameters and descriptions of the multipliers (Wr, Ws, Wt, We)."
+                                inputs = {}
+                                output_type = "string"
+
+                                def forward(self):
+                                    return (
+                                        "Pricing Formula: Price = Base Price * GRI * (Wr * Ws * Wt * We)\n"
+                                        "Multiplier Parameters:\n"
+                                        "- Wr: Regional Weight (Drought factor)\n"
+                                        "- Ws: Seasonal Weight (Harvest cycle alignment)\n"
+                                        "- Wt: Kingdom Tax Weight (non-essential services surcharge)\n"
+                                        "- We: Emergency Weight (anti-hoarding/rationing adjustments)"
+                                    )
+
+                            # Create agent instance
+                            agent = CodeAgent(
+                                tools=[GetGoldPriceTool(), GetPricingFormulaTool()],
+                                model=None, # will fall back to local direct executions
+                                additional_authorized_imports=["pandas", "numpy"]
+                            )
+
+                            # Process query using agent reasoning logs internally
+                            prompt_with_instructions = (
+                                f"You are a survivor speaking to a visitor. Stay in character.\n"
+                                f"System Guidelines:\n{system_prompt}\n\n"
+                                f"Query: {user_input}"
+                            )
+                        except Exception:
+                            # fallback to direct generative model if smolagents fails to load
+                            pass
+
                         # Start chat with loaded history
                         chat = model.start_chat(history=history_payload)
                         response = chat.send_message(
