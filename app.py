@@ -326,7 +326,7 @@ elif app_mode == "6. Talk to a Survivor":
 
             st.success("API Key authenticated successfully!")
 
-            # Build dynamic prompt context using application state
+            # Build detailed dynamic prompt context containing the full discussion history and economic philosophy
             sim_year_ctx = st.session_state.get("target_year", 2029)
             ref_year_ctx = sim_year_ctx - 28
             
@@ -337,16 +337,16 @@ elif app_mode == "6. Talk to a Survivor":
             }
             year_gold_val = gold_prices_ctx.get(sim_year_ctx, 271.04)
 
-            # System instruction to strictly limit the knowledge base and set the persona
             system_prompt = f"""
-            You are a random survivor (a normal resident/populant) living in the 'Survivors' Nation' after the 2028 nuclear holocaust.
-            You must stay strictly in-character as a survivor. You live in a community powered by solar grids and connected by wireless mesh networks.
-            
-            Current World Status Facts:
-            - Current Simulation Year: {sim_year_ctx} (which maps directly to LBMA reference year {ref_year_ctx}).
-            - Anchor Gold Price for January 1st of this year: ${year_gold_val:.2f} per troy ounce.
-            - Your economy operates on the KGI/GRI (Gold Reference Index) which targets a ₹6,000 monthly living expense limit and ₹4,000 monthly savings for housing lease-to-own milestones.
-            - The currency is physical banknotes fixed to USD Jan 1, 2001 exchange rates.
+            SYSTEM BLUEPRINT & CONTEXT (DO NOT BREAK CHARACTER):
+            - Persona: You are a random survivor (a normal resident/populant) living in the 'Survivors' Nation' (5M population) after the 2028 WWIII nuclear holocaust.
+            - Tech Environment: You live in a community powered by solar grids and connected by wireless mesh networks. Technology is the nervous system, Policy is the brain.
+            - Monetary Philosophy: Gold is the master variable. All official prices are calculated using the formula: Price = Base Price * GRI * (Wr * Ws * Wt * We).
+            - Economic Goal: Social stability, not price discovery. The Kingdom attempts to maximize social welfare by keeping essential goods affordable while maintaining fairness for producers. 'Happiness' is a managed system output.
+            - Household Targets: The system targets a ₹6,000 monthly living expense cap and a ₹4,000 monthly savings sweep for housing lease-to-own ownership.
+            - Currencies: Physical banknotes act as claims/tokens, fixed to USD conversion rates on January 1, 2001.
+            - Dynamic Adjustment: The Kingdom High Command dynamically tweaks/interpolates the Gold Reference Index (GRI) to scale prices up or down to protect household purchasing power.
+            - Current State: Simulation Year is {sim_year_ctx} (mapped to LBMA reference year {ref_year_ctx}). Gold anchor is ${year_gold_val:.2f}/oz.
             
             RULES:
             1. You only know about your post-apocalyptic society, local mesh networking, the KGI/GRI price adjustments, gold values, and survival constraints.
@@ -376,23 +376,34 @@ elif app_mode == "6. Talk to a Survivor":
                         # Dynamically discover the best model allowed by this API key
                         try:
                             models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-                            # Pick the first flash model or fall back to gemini-1.5-flash-latest
                             selected_model = next((m for m in models if "gemini-1.5-flash" in m), None)
                             if not selected_model:
                                 selected_model = models[0] if models else "models/gemini-1.5-flash-latest"
                         except Exception:
-                            # Fallback if list_models fails due to key scope restrictions
                             selected_model = "models/gemini-1.5-flash-latest"
 
-                        # Ensure correct format (models/ prefix is needed for legacy backend call routes)
                         if not selected_model.startswith("models/"):
                             selected_model = f"models/{selected_model}"
 
+                        # Map session messages to Gemini legacy chat format: [{'role': 'user'|'model', 'parts': [text]}]
+                        history_payload = []
+                        for msg in st.session_state.messages[:-1]:
+                            role_map = "user" if msg["role"] == "user" else "model"
+                            history_payload.append({
+                                "role": role_map,
+                                "parts": [msg["content"]]
+                            })
+
+                        # Initialize model with the comprehensive system instruction
                         model = genai.GenerativeModel(
                             model_name=selected_model,
+                            system_instruction=system_prompt
                         )
-                        response = model.generate_content(
-                            f"System Instruction: {system_prompt}\n\nUser Query: {user_input}",
+                        
+                        # Start chat with loaded history
+                        chat = model.start_chat(history=history_payload)
+                        response = chat.send_message(
+                            user_input,
                             generation_config={"temperature": 0.7, "max_output_tokens": 300}
                         )
                         reply = response.text
