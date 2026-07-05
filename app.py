@@ -42,7 +42,8 @@ app_mode = st.sidebar.selectbox("Choose Module", [
     "2. Population Hierarchy", 
     "3. Monetary System (GRI)", 
     "4. Pricing Simulator", 
-    "5. IT vs MIS Engineering"
+    "5. IT vs MIS Engineering",
+    "6. Talk to a Survivor"
 ])
 
 st.sidebar.info("""
@@ -300,3 +301,80 @@ elif app_mode == "5. IT vs MIS Engineering":
         * **Data Governance:** Defining role authorities (Monetary Board vs Local Council Officers).
         * **Ethical Assessment:** Evaluating algorithmic overrides, emergency policies, and housing milestones.
         """)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 6. TALK TO A SURVIVOR MODULE
+# ─────────────────────────────────────────────────────────────────────────────
+elif app_mode == "6. Talk to a Survivor":
+    st.title("🗣️ Interacting with a Local Survivor")
+    st.write("""
+    ### Enter your Gemini API Key to start the simulator
+    This module uses the **Bring Your Own Key (BYOK)** approach. 
+    The AI acts as a survivor from the 5 million population living under KGI/GRI monetary rules.
+    """)
+
+    # API Key Input
+    api_key = st.text_input("Enter Gemini API Key", type="password")
+
+    if api_key:
+        try:
+            from google import genai
+            from google.genai import types
+
+            # Initialize client
+            client = genai.Client(api_key=api_key)
+
+            st.success("API Key authenticated successfully!")
+
+            # System instruction to strictly limit the knowledge base and set the persona
+            system_prompt = """
+            You are a random survivor (a normal resident/populant) living in the 'Survivors' Nation' after the 2028 nuclear holocaust.
+            You must stay strictly in-character as a survivor. You live in a community powered by solar grids and connected by wireless mesh networks.
+            Your economy operates on the KGI/GRI (Gold Reference Index) which targets a ₹6,000 monthly living expense limit and ₹4,000 monthly savings for housing lease-to-own milestones.
+            The currency is physical banknotes fixed to USD Jan 1, 2001 exchange rates.
+            
+            RULES:
+            1. You only know about your post-apocalyptic society, local mesh networking, the KGI/GRI price adjustments, gold values, and survival constraints.
+            2. If someone asks you about things outside this context (e.g. current world news, generic factual queries like 'What is Mount Everest' or 'Who is the President'), you must refuse to answer. Say: 'I am just a simple survivor working in the fields. I only know about our community mesh networks, crop yields, and the KGI pricing changes. I cannot help with external history.'
+            3. Keep your tone survival-focused, pragmatic, and slightly weary but hopeful.
+            """
+
+            # Initialize Chat state
+            if "messages" not in st.session_state:
+                st.session_state.messages = []
+
+            # Display previous chat messages
+            for msg in st.session_state.messages:
+                with st.chat_message(msg["role"]):
+                    st.write(msg["content"])
+
+            # Input box
+            if user_input := st.chat_input("Ask the survivor a question about their life or the economy..."):
+                # Append user message
+                st.session_state.messages.append({"role": "user", "content": user_input})
+                with st.chat_message("user"):
+                    st.write(user_input)
+
+                # Query Gemini using the new SDK standard structures
+                with st.chat_message("assistant"):
+                    with st.spinner("The survivor is replying..."):
+                        response = client.models.generate_content(
+                            model='gemini-2.5-flash',
+                            contents=user_input,
+                            config=types.GenerateContentConfig(
+                                system_instruction=system_prompt,
+                                temperature=0.7,
+                                max_output_tokens=300
+                            )
+                        )
+                        reply = response.text
+                        st.write(reply)
+                
+                # Append assistant reply
+                st.session_state.messages.append({"role": "assistant", "content": reply})
+
+        except Exception as e:
+            st.error(f"Error communicating with Gemini API: {e}")
+    else:
+        st.info("Please enter your Gemini API Key in the box above to enable conversational simulation.")
+
