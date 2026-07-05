@@ -318,8 +318,8 @@ elif app_mode == "6. Talk to a Survivor":
 
     if api_key:
         try:
-            from google import genai
-            from google.genai import types
+            import google_genai as genai
+            from google_genai import types
 
             # Initialize client
             client = genai.Client(api_key=api_key)
