@@ -318,11 +318,10 @@ elif app_mode == "6. Talk to a Survivor":
 
     if api_key:
         try:
-            import google_genai as genai
-            from google_genai import types
+            import google.generativeai as genai
 
-            # Initialize client
-            client = genai.Client(api_key=api_key)
+            # Configure API key
+            genai.configure(api_key=api_key)
 
             st.success("API Key authenticated successfully!")
 
@@ -355,17 +354,17 @@ elif app_mode == "6. Talk to a Survivor":
                 with st.chat_message("user"):
                     st.write(user_input)
 
-                # Query Gemini using the new SDK standard structures
+                # Query Gemini using the legacy SDK structures
                 with st.chat_message("assistant"):
                     with st.spinner("The survivor is replying..."):
-                        response = client.models.generate_content(
-                            model='gemini-2.5-flash',
-                            contents=user_input,
-                            config=types.GenerateContentConfig(
-                                system_instruction=system_prompt,
-                                temperature=0.7,
-                                max_output_tokens=300
-                            )
+                        # Attempt to use gemini-1.5-flash which is widely supported in the legacy package
+                        model = genai.GenerativeModel(
+                            model_name='gemini-1.5-flash',
+                            system_instruction=system_prompt
+                        )
+                        response = model.generate_content(
+                            user_input,
+                            generation_config={"temperature": 0.7, "max_output_tokens": 300}
                         )
                         reply = response.text
                         st.write(reply)
@@ -377,4 +376,5 @@ elif app_mode == "6. Talk to a Survivor":
             st.error(f"Error communicating with Gemini API: {e}")
     else:
         st.info("Please enter your Gemini API Key in the box above to enable conversational simulation.")
+
 
