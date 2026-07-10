@@ -151,15 +151,15 @@ elif app_mode == "3. Monetary System (GRI)":
     with col2:
         st.write("#### Permanent Exchange Rates (Locked Jan 1, 2001)")
         fx_rates = {
-            "Currency Code": ["USD", "EUR", "GBP", "INR", "CAD", "JPY", "AUD", "SGD", "CHF", "CNY", "MYR", "HKD", "BRL", "MXN", "NZD", "NOK", "SEK", "THB", "ZAR", "KRW"],
+            "Currency Code": ["USD", "EUR", "GBP", "INR", "PAK", "CAD", "JPY", "AUD", "SGD", "CHF", "CNY", "MYR", "HKD", "BRL", "MXN", "NZD", "NOK", "SEK", "THB", "ZAR", "KRW"],
             "Currency Name": [
-                "US Dollar", "Euro (EMU)", "British Pound", "Indian Rupee", "Canadian Dollar",
+                "US Dollar", "Euro (EMU)", "British Pound", "Indian Rupee", "Pakistani Rupee", "Canadian Dollar",
                 "Japanese Yen", "Australian Dollar", "Singapore Dollar", "Swiss Franc", "Chinese Yuan",
                 "Malaysian Ringgit", "Hong Kong Dollar", "Brazilian Real", "Mexican Peso", "New Zealand Dollar",
                 "Norwegian Krone", "Swedish Krona", "Thai Baht", "South African Rand", "South Korean Won"
             ],
             "Fixed Rate (per USD)": [
-                1.0000, 0.9374, 0.6814, 46.5500, 1.5037,
+                1.0000, 0.9374, 0.6814, 46.5500, 61.9300, 1.5037,
                 117.2800, 1.8021, 1.7338, 1.6390, 8.2766,
                 3.8000, 7.7997, 1.9540, 9.9720, 2.2472,
                 8.7675, 9.5050, 43.0900, 7.8250, 1283.8000
@@ -236,12 +236,16 @@ elif app_mode == "3. Monetary System (GRI)":
         df_full["Gold Price (USD/lb)"] = df_full["Gold Price (USD/oz)"] / 14.5833  # lb troy
         df_full["Gold Price (USD/pawn)"] = df_full["Gold Price (USD/oz)"] / 3.8879346
         
+        # Calculate dynamic values in INR and PAK (PKR) currencies
+        df_full["Gold Price (INR/oz)"] = df_full["Gold Price (USD/oz)"] * 46.55
+        df_full["Gold Price (PAK/oz)"] = df_full["Gold Price (USD/oz)"] * 61.93
+        
         # Formatting output
         df_full.index.name = "Date"
         df_display = df_full.reset_index()
         df_display["Date"] = df_display["Date"].dt.strftime('%Y-%m-%d')
         
-        st.success("Successfully interpolated 2,556 days of data across all weights!")
+        st.success("Successfully interpolated 2,556 days of data across all weights and currencies!")
         
         # Display sample and download link
         st.write("#### Data Sample (First 20 Days):")
@@ -249,7 +253,9 @@ elif app_mode == "3. Monetary System (GRI)":
             "Gold Price (USD/oz)": "${:.4f}",
             "Gold Price (USD/g)": "${:.4f}",
             "Gold Price (USD/lb)": "${:.4f}",
-            "Gold Price (USD/pawn)": "${:.4f}"
+            "Gold Price (USD/pawn)": "${:.4f}",
+            "Gold Price (INR/oz)": "₹{:.2f}",
+            "Gold Price (PAK/oz)": "₨{:.2f}"
         }))
         
         st.write("#### Data Sample (Last 20 Days):")
@@ -257,7 +263,9 @@ elif app_mode == "3. Monetary System (GRI)":
             "Gold Price (USD/oz)": "${:.4f}",
             "Gold Price (USD/g)": "${:.4f}",
             "Gold Price (USD/lb)": "${:.4f}",
-            "Gold Price (USD/pawn)": "${:.4f}"
+            "Gold Price (USD/pawn)": "${:.4f}",
+            "Gold Price (INR/oz)": "₹{:.2f}",
+            "Gold Price (PAK/oz)": "₨{:.2f}"
         }))
 
         # Enable CSV download
