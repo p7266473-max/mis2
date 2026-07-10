@@ -65,7 +65,7 @@ st.markdown("""
 # SIDEBAR NAVIGATION
 # ─────────────────────────────────────────────────────────────────────────────
 st.sidebar.title("Survivors' Nation")
-st.sidebar.markdown("*MIS & IT Case Study (Week 3)*")
+st.sidebar.markdown("*MIS & IT Case Study*")
 
 app_mode = st.sidebar.selectbox("Choose Module", [
     "1. Overview & Rules", 
