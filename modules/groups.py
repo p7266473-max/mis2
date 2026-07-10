@@ -1,6 +1,62 @@
 import streamlit as st
 import pandas as pd
 
+# Standardized commodity item catalogs for all sectors
+COMMODITY_CATALOG = {
+    "Rice / Flour": {
+        "Rice Bulk Cargo (500 kg)": 400,
+        "Wheat Flour Sacks (300 kg)": 300,
+        "Lentils / Pulses (200 kg)": 300,
+        "Dry Maize Reserves (200 kg)": 200
+    },
+    "Meat": {
+        "Dehydrated Chicken Rations (50 kg)": 300,
+        "Preserved Beef Cans (100 units)": 400,
+        "Dried Salted Fish (50 kg)": 300
+    },
+    "Vegetables": {
+        "Potatoes Storage Load (300 kg)": 200,
+        "Onions Storage Load (200 kg)": 150,
+        "Carrots & Root Crops (150 kg)": 150,
+        "Dehydrated Cabbage Crates": 100
+    },
+    "Fruits": {
+        "Orchard Apples Crate (50 kg)": 120,
+        "Citrus Vitamin C Box (50 kg)": 100,
+        "Dehydrated Banana Slices (20 kg)": 80
+    },
+    "Spices": {
+        "Iodized Salt Crates (200 kg)": 80,
+        "Turmeric Anti-septic Powders (10 kg)": 60,
+        "Essential Trading Pepper (10 kg)": 60
+    },
+    "Electricity": {
+        "Silicon Solar Cell Repair Sheets": 150,
+        "Deep Cycle Battery Cells (12V)": 150,
+        "Inverter Spare Parts Kit": 100
+    },
+    "Fuel": {
+        "Scavenged Diesel Barrels (200L)": 200,
+        "Ethanol Biofuel Blend (150L)": 120,
+        "Engine Oil & Grease Barrels": 80
+    },
+    "Furniture / Utensils": {
+        "Camp Kitchen Utensils Set (100 units)": 150,
+        "Folding Camp Benches (20 units)": 150,
+        "Wooden Commode & Basin Units": 200
+    },
+    "Clothes": {
+        "Thermal Wool Fabrics (50 rolls)": 150,
+        "Heavy-Duty Sewing Machine Parts": 100,
+        "Waterproof Canvas Materials": 50
+    },
+    "Consolidation": {
+        "Clean Water Chlorine Tablets": 300,
+        "Monetary Stabilization Bullion Reserves": 300,
+        "Emergency Medical Syringes/Antibiotics": 200
+    }
+}
+
 def show_groups():
     st.title("👥 Kingdom Sector Teams & Group Assignments")
     st.write("""
@@ -162,6 +218,105 @@ def show_groups():
                         st.markdown(card_content, unsafe_allow_html=True)
                         
     with t_groups2:
+        st.subheader("📝 Draft Your Budget Proposal")
+        st.write("Each sector team must draft their proposed resource budget by selecting items below and generating their formal proposal PDF.")
+        
+        c_prop1, c_prop2 = st.columns([1, 2])
+        with c_prop1:
+            sector_choice = st.selectbox("Select Your Sector", list(COMMODITY_CATALOG.keys()))
+        
+        with c_prop2:
+            selected_items = st.multiselect(
+                f"Select items for {sector_choice}", 
+                list(COMMODITY_CATALOG[sector_choice].keys()),
+                default=list(COMMODITY_CATALOG[sector_choice].keys())
+            )
+        
+        total_cost = sum([COMMODITY_CATALOG[sector_choice][item] for item in selected_items])
+        
+        st.markdown(f"### 💰 Estimated Cost for **{sector_choice}**: **₹{total_cost:,.2f}**")
+        
+        # Min/max boundaries check
+        boundaries = {
+            "Rice / Flour": (1000, 1500),
+            "Meat": (800, 1200),
+            "Vegetables": (400, 800),
+            "Fruits": (200, 400),
+            "Spices": (100, 300),
+            "Electricity": (300, 500),
+            "Fuel": (300, 500),
+            "Furniture / Utensils": (400, 600),
+            "Clothes": (200, 400),
+            "Consolidation": (600, 1000)
+        }
+        
+        min_b, max_b = boundaries.get(sector_choice, (0, 99999))
+        if min_b <= total_cost <= max_b:
+            st.success(f"✅ Budget is within allowed bandwidth: **₹{min_b} – ₹{max_b}**")
+        else:
+            st.warning(f"⚠️ Budget exceeds or is below allowed bandwidth: **₹{min_b} – ₹{max_b}**")
+            
+        if st.button("Generate Formal Proposal PDF", key="btn_pdf_gen"):
+            from fpdf import FPDF
+            
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_margins(20, 20, 20)
+            
+            # Header block
+            pdf.set_fill_color(15, 23, 42) # Slate-dark
+            pdf.rect(0, 0, 210, 40, "F")
+            
+            pdf.ln(5)
+            pdf.set_text_color(255, 255, 255)
+            pdf.set_font("Helvetica", 'B', 16)
+            pdf.cell(170, 10, "SURVIVORS' NATION - CABINET OF MINISTERS", ln=True, align='C')
+            pdf.set_font("Helvetica", size=11)
+            pdf.cell(170, 8, "OFFICIAL ECONOMIC BUDGET PROPOSAL LEDGER", ln=True, align='C')
+            
+            # Body
+            pdf.set_text_color(15, 23, 42)
+            pdf.ln(15)
+            pdf.set_font("Helvetica", 'B', 13)
+            pdf.cell(170, 10, f"Sector Proposal: {sector_choice}", ln=True)
+            pdf.line(20, pdf.get_y(), 190, pdf.get_y())
+            pdf.ln(5)
+            
+            pdf.set_font("Helvetica", size=10)
+            pdf.cell(100, 8, "Selected Commodity Items", 'B')
+            pdf.cell(70, 8, "Allocated Cost (INR)", 'B', ln=True, align='R')
+            
+            pdf.set_font("Helvetica", size=9)
+            for item in selected_items:
+                cost = COMMODITY_CATALOG[sector_choice][item]
+                pdf.cell(100, 8, f"- {item}")
+                pdf.cell(70, 8, f"INR {cost:,.2f}", ln=True, align='R')
+                
+            pdf.ln(5)
+            pdf.set_font("Helvetica", 'B', 11)
+            pdf.cell(100, 10, "Total Proposed Sector Budget", 'T')
+            pdf.cell(70, 10, f"INR {total_cost:,.2f}", 'T', ln=True, align='R')
+            
+            pdf.ln(10)
+            pdf.set_font("Helvetica", 'I', 8)
+            pdf.multi_cell(170, 5, "By downloading this ledger, the designated sector team formally submits this request to Group 1 (Monetary Board). Audits will be conducted offline via wireless mesh sync nodes.")
+            
+            # Signatures
+            pdf.ln(15)
+            pdf.set_font("Helvetica", 'B', 10)
+            pdf.cell(85, 10, "Sector Lead Representative:")
+            pdf.cell(85, 10, "Monetary Board Representative:", ln=True)
+            pdf.ln(5)
+            pdf.cell(85, 5, "___________________________")
+            pdf.cell(85, 5, "___________________________", ln=True)
+            
+            pdf_output = "proposal.pdf"
+            pdf.output(pdf_output)
+            
+            with open(pdf_output, "rb") as f:
+                st.download_button("Download Proposal PDF File", f, file_name=f"Budget_Proposal_{sector_choice.replace(' ', '')}.pdf")
+
+        st.write("---")
         st.subheader("📊 The Kingdom’s Operational Matrix (2026 Simulation)")
         st.write("""
         This matrix maps the 10-Sector Budgetary Baseline to the assigned groups. 
