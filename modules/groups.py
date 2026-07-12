@@ -42,24 +42,26 @@ COMMODITY_CATALOG = {
         "Mutton (3 kg)": 420
     },
     "Clothes": {
-        "Sarees/Dhotis (Monthly portion)": 180,
-        "Children's Sets (Monthly portion)": 110,
-        "Innerwear/Misc (Monthly portion)": 70,
-        "Tailoring/Repairs (Monthly portion)": 40
+        "Sarees/Dhotis (2 units)": 500,
+        "Children's Sets (4 units)": 300,
+        "Innerwear/Misc (6 units)": 180,
+        "Tailoring/Repairs (Lump sum)": 100,
+        "Hygiene / Laundry Soap & Misc (3-Month)": 120
     },
     "Furniture / Utensils": {
-        "Dining Table (Monthly deprec.)": 50,
-        "Chairs (6) (Monthly deprec.)": 50,
-        "Cots (Beds) (3) (Monthly deprec.)": 100,
-        "Cupboard/Storage (1) (Monthly deprec.)": 85,
-        "Kitchen Utensils Set (Monthly deprec.)": 65
+        "Dining Table (1 unit)": 1200,
+        "Chairs (6 units)": 1200,
+        "Cots (Beds) (3 units)": 2400,
+        "Cupboard/Storage (1 unit)": 2000,
+        "Kitchen Utensils Set": 1500,
+        "Maintenance & Repair Reserve (2-Year)": 100
     },
     "Fuel": {
         "Cooking Oil (3.5 Liters)": 160,
         "Diesel (20 Liters)": 360
     },
     "Electricity": {
-        "Electricity Tariff (Baseline)": 180,
+        "Electricity Tariff (Baseline 70-100 kWh)": 180,
         "Simulation Grid Upgrade Margin": 100
     }
 }
@@ -239,9 +241,18 @@ def show_groups():
                 default=list(COMMODITY_CATALOG[sector_choice].keys())
             )
         
-        total_cost = sum([COMMODITY_CATALOG[sector_choice][item] for item in selected_items])
+        raw_total_cost = sum([COMMODITY_CATALOG[sector_choice][item] for item in selected_items])
         
-        st.markdown(f"### 💰 Estimated Cost for **{sector_choice}**: **₹{total_cost:,.2f}**")
+        # Apply monthly conversion factor if applicable
+        if sector_choice == "Clothes":
+            total_cost = raw_total_cost / 3
+            st.markdown(f"### 💰 Estimated Cost for **{sector_choice}**: **₹{total_cost:,.2f} / month** (3-Month Total: ₹{raw_total_cost:,.2f})")
+        elif sector_choice == "Furniture / Utensils":
+            total_cost = raw_total_cost / 24
+            st.markdown(f"### 💰 Estimated Cost for **{sector_choice}**: **₹{total_cost:,.2f} / month** (2-Year Total: ₹{raw_total_cost:,.2f})")
+        else:
+            total_cost = raw_total_cost
+            st.markdown(f"### 💰 Estimated Cost for **{sector_choice}**: **₹{total_cost:,.2f}**")
         
         # Min/max boundaries check
         boundaries = {
@@ -300,8 +311,17 @@ def show_groups():
                 
             pdf.ln(5)
             pdf.set_font("Helvetica", 'B', 11)
-            pdf.cell(100, 10, "Total Proposed Sector Budget", 'T')
-            pdf.cell(70, 10, f"INR {total_cost:,.2f}", 'T', ln=True, align='R')
+            
+            if sector_choice in ["Clothes", "Furniture / Utensils"]:
+                divisor = 3 if sector_choice == "Clothes" else 24
+                duration_label = "3-Month" if sector_choice == "Clothes" else "2-Year"
+                pdf.cell(100, 10, f"Total Selected Inventory ({duration_label})")
+                pdf.cell(70, 10, f"INR {raw_total_cost:,.2f}", ln=True, align='R')
+                pdf.cell(100, 10, f"Monthly Allocation (divided by {divisor})", 'T')
+                pdf.cell(70, 10, f"INR {total_cost:,.2f}", 'T', ln=True, align='R')
+            else:
+                pdf.cell(100, 10, "Total Proposed Sector Budget", 'T')
+                pdf.cell(70, 10, f"INR {total_cost:,.2f}", 'T', ln=True, align='R')
             
             pdf.ln(10)
             pdf.set_font("Helvetica", 'I', 8)
