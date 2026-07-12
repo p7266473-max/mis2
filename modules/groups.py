@@ -4,56 +4,63 @@ import pandas as pd
 # Standardized commodity item catalogs for all sectors
 COMMODITY_CATALOG = {
     "Rice / Flour": {
-        "Rice Bulk Cargo (500 kg)": 400,
-        "Wheat Flour Sacks (300 kg)": 300,
-        "Lentils / Pulses (200 kg)": 300,
-        "Dry Maize Reserves (200 kg)": 200
-    },
-    "Meat": {
-        "Dehydrated Chicken Rations (50 kg)": 300,
-        "Preserved Beef Cans (100 units)": 400,
-        "Dried Salted Fish (50 kg)": 300
-    },
-    "Vegetables": {
-        "Potatoes Storage Load (300 kg)": 200,
-        "Onions Storage Load (200 kg)": 150,
-        "Carrots & Root Crops (150 kg)": 150,
-        "Dehydrated Cabbage Crates": 100
-    },
-    "Fruits": {
-        "Orchard Apples Crate (50 kg)": 120,
-        "Citrus Vitamin C Box (50 kg)": 100,
-        "Dehydrated Banana Slices (20 kg)": 80
+        "Rice (55 kg)": 880,
+        "Flour (Wheat/Atta) (10 kg)": 320
     },
     "Spices": {
-        "Iodized Salt Crates (200 kg)": 80,
-        "Turmeric Anti-septic Powders (10 kg)": 60,
-        "Essential Trading Pepper (10 kg)": 60
+        "Turmeric Powder (200g)": 20,
+        "Chili Powder (500g)": 45,
+        "Coriander Powder (500g)": 45,
+        "Mustard Seeds (200g)": 15,
+        "Cumin Seeds (100g)": 15,
+        "Fenugreek Seeds (100g)": 15,
+        "Asafoetida (Hing) (50g)": 20,
+        "Tamarind (500g)": 25
     },
-    "Electricity": {
-        "Silicon Solar Cell Repair Sheets": 150,
-        "Deep Cycle Battery Cells (12V)": 150,
-        "Inverter Spare Parts Kit": 100
+    "Vegetables": {
+        "Potato (12 kg)": 240,
+        "Onion (10 kg)": 250,
+        "Tomato (8 kg)": 240,
+        "Beetroot (4 kg)": 120,
+        "Carrot (4 kg)": 140,
+        "Beans (4 kg)": 160,
+        "Radish (4 kg)": 80,
+        "Cabbage (4 kg)": 100,
+        "Bitter Gourd (3 kg)": 90,
+        "Soya Beans (2 kg)": 80
     },
-    "Fuel": {
-        "Scavenged Diesel Barrels (200L)": 200,
-        "Ethanol Biofuel Blend (150L)": 120,
-        "Engine Oil & Grease Barrels": 80
+    "Fruits": {
+        "Bananas (12 kg)": 108,
+        "Papaya (6 kg)": 66,
+        "Watermelon (5 kg)": 45,
+        "Guava (3 kg)": 51,
+        "Lime/Citrus (1 kg)": 30
     },
-    "Furniture / Utensils": {
-        "Camp Kitchen Utensils Set (100 units)": 150,
-        "Folding Camp Benches (20 units)": 150,
-        "Wooden Commode & Basin Units": 200
+    "Meat": {
+        "Chicken (8 kg)": 480,
+        "Fish (5 kg)": 350,
+        "Mutton (3 kg)": 420
     },
     "Clothes": {
-        "Thermal Wool Fabrics (50 rolls)": 150,
-        "Heavy-Duty Sewing Machine Parts": 100,
-        "Waterproof Canvas Materials": 50
+        "Sarees/Dhotis (Monthly portion)": 180,
+        "Children's Sets (Monthly portion)": 110,
+        "Innerwear/Misc (Monthly portion)": 70,
+        "Tailoring/Repairs (Monthly portion)": 40
     },
-    "Consolidation": {
-        "Clean Water Chlorine Tablets": 300,
-        "Monetary Stabilization Bullion Reserves": 300,
-        "Emergency Medical Syringes/Antibiotics": 200
+    "Furniture / Utensils": {
+        "Dining Table (Monthly deprec.)": 50,
+        "Chairs (6) (Monthly deprec.)": 50,
+        "Cots (Beds) (3) (Monthly deprec.)": 100,
+        "Cupboard/Storage (1) (Monthly deprec.)": 85,
+        "Kitchen Utensils Set (Monthly deprec.)": 65
+    },
+    "Fuel": {
+        "Cooking Oil (3.5 Liters)": 160,
+        "Diesel (20 Liters)": 360
+    },
+    "Electricity": {
+        "Electricity Tariff (Baseline)": 180,
+        "Simulation Grid Upgrade Margin": 100
     }
 }
 
@@ -238,16 +245,15 @@ def show_groups():
         
         # Min/max boundaries check
         boundaries = {
-            "Rice / Flour": (1000, 1500),
-            "Meat": (800, 1200),
-            "Vegetables": (400, 800),
+            "Rice / Flour": (1000, 1400),
+            "Spices": (150, 250),
+            "Vegetables": (1300, 1700),
             "Fruits": (200, 400),
-            "Spices": (100, 300),
-            "Electricity": (300, 500),
-            "Fuel": (300, 500),
-            "Furniture / Utensils": (400, 600),
-            "Clothes": (200, 400),
-            "Consolidation": (600, 1000)
+            "Meat": (1100, 1400),
+            "Clothes": (300, 500),
+            "Furniture / Utensils": (300, 400),
+            "Fuel": (450, 600),
+            "Electricity": (200, 350)
         }
         
         min_b, max_b = boundaries.get(sector_choice, (0, 99999))
@@ -319,21 +325,21 @@ def show_groups():
         st.write("---")
         st.subheader("📊 The Kingdom’s Operational Matrix (2026 Simulation)")
         st.write("""
-        This matrix maps the 10-Sector Budgetary Baseline to the assigned groups. 
+        This matrix maps the 9-Sector Budgetary Baseline to the assigned groups. 
         Each group carries systemic responsibility for their resource bandwidth.
         """)
         
         # Display baseline table
         matrix_data = {
-            "Sector": ["1. Grains/Staples", "2. Proteins (Meat)", "3. Vegetables", "4. Fruits", "5. Spices/Safety", "6. Electricity", "7. Fuel", "8. Furniture/Utensils", "9. Clothes", "10. Reserve/Health"],
-            "Assigned Group": ["Group 2 (Rice/Flour)", "Group 10 (Meat)", "Group 4 (Vegetables)", "Group 5 (Fruits)", "Group 3 (Spices)", "Group 6 (Electricity)", "Group 7 (Fuel)", "Group 8 (Furniture)", "Group 9 (Clothes)", "Group 1 (Consolidation)"],
-            "Baseline Budget": [1200, 1000, 600, 300, 200, 400, 400, 500, 300, 800],
-            "Min Bandwidth": [1000, 800, 400, 200, 100, 300, 300, 400, 200, 600],
-            "Max Bandwidth": [1500, 1200, 800, 400, 300, 500, 500, 600, 400, 1000]
+            "Sector": ["1. Rice / Flour", "2. Spices", "3. Vegetables", "4. Fruits", "5. Proteins (Meat)", "6. Clothes", "7. Furniture / Utensils", "8. Fuel", "9. Electricity"],
+            "Assigned Group": ["Group 2 (Rice/Flour)", "Group 3 (Spices)", "Group 4 (Vegetables)", "Group 5 (Fruits)", "Group 10 (Meat)", "Group 9 (Clothes)", "Group 8 (Furniture)", "Group 7 (Fuel)", "Group 6 (Electricity)"],
+            "Baseline Budget": [1200, 200, 1500, 300, 1250, 400, 350, 520, 280],
+            "Min Bandwidth": [1000, 150, 1300, 200, 1100, 300, 300, 450, 200],
+            "Max Bandwidth": [1400, 250, 1700, 400, 1400, 500, 400, 600, 350]
         }
         df_matrix = pd.DataFrame(matrix_data)
         st.table(df_matrix)
-        st.caption("*Note: Electricity and Fuel budgets are split to match Group 6 and Group 7 tasks. Reserve/Health budget is allocated to Group 1 (Monetary Board) as their Emergency Fund.")
+        st.caption("*Note: Group 1 (Consolidation) acts as the Monetary Board and audits all transactions but does not own a commodity sector budget.")
 
         # Interactive Live Budget Governor
         st.write("---")
@@ -343,20 +349,19 @@ def show_groups():
         bg_col1, bg_col2 = st.columns(2)
         with bg_col1:
             st.write("##### Input Proposed Budgets")
-            b_g2 = st.number_input("1. Grains/Staples (Group 2) [1000-1500]", 1000, 1500, 1200, step=50, key="gov_b_g2")
-            b_g10 = st.number_input("2. Proteins (Meat) (Group 10) [800-1200]", 800, 1200, 1000, step=50, key="gov_b_g10")
-            b_g4 = st.number_input("3. Vegetables (Group 4) [400-800]", 400, 800, 600, step=50, key="gov_b_g4")
-            b_g5 = st.number_input("4. Fruits (Group 5) [200-400]", 200, 400, 300, step=50, key="gov_b_g5")
-            b_g3 = st.number_input("5. Spices/Safety (Group 3) [100-300]", 100, 300, 200, step=50, key="gov_b_g3")
+            b_g2 = st.number_input("1. Rice / Flour (Group 2) [1000-1400]", 1000, 1400, 1200, step=10, key="gov_b_g2")
+            b_g3 = st.number_input("2. Spices (Group 3) [150-250]", 150, 250, 200, step=10, key="gov_b_g3")
+            b_g4 = st.number_input("3. Vegetables (Group 4) [1300-1700]", 1300, 1700, 1500, step=10, key="gov_b_g4")
+            b_g5 = st.number_input("4. Fruits (Group 5) [200-400]", 200, 400, 300, step=10, key="gov_b_g5")
+            b_g10 = st.number_input("5. Proteins (Meat) (Group 10) [1100-1400]", 1100, 1400, 1250, step=10, key="gov_b_g10")
         with bg_col2:
             st.write("##### Input Proposed Budgets (Cont.)")
-            b_g6 = st.number_input("6. Electricity (Group 6) [300-500]", 300, 500, 400, step=50, key="gov_b_g6")
-            b_g7 = st.number_input("7. Fuel (Group 7) [300-500]", 300, 500, 400, step=50, key="gov_b_g7")
-            b_g8 = st.number_input("8. Furniture/Utensils (Group 8) [400-600]", 400, 600, 500, step=50, key="gov_b_g8")
-            b_g9 = st.number_input("9. Clothes (Group 9) [200-400]", 200, 400, 300, step=50, key="gov_b_g9")
-            b_g1 = st.number_input("10. Reserve/Health (Group 1) [600-1000]", 600, 1000, 800, step=50, key="gov_b_g1")
+            b_g9 = st.number_input("6. Clothes (Group 9) [300-500]", 300, 500, 400, step=10, key="gov_b_g9")
+            b_g8 = st.number_input("7. Furniture / Utensils (Group 8) [300-400]", 300, 400, 350, step=10, key="gov_b_g8")
+            b_g7 = st.number_input("8. Fuel (Group 7) [450-600]", 450, 600, 520, step=10, key="gov_b_g7")
+            b_g6 = st.number_input("9. Electricity (Group 6) [200-350]", 200, 350, 280, step=10, key="gov_b_g6")
 
-        total_proposed = b_g2 + b_g10 + b_g4 + b_g5 + b_g3 + b_g6 + b_g7 + b_g8 + b_g9 + b_g1
+        total_proposed = b_g2 + b_g3 + b_g4 + b_g5 + b_g10 + b_g9 + b_g8 + b_g7 + b_g6
         
         # Display progress and validation status
         st.write("### Total Proposed Budget Balance")
