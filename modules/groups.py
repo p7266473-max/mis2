@@ -326,23 +326,55 @@ def show_groups():
                 st.download_button("Download Proposal PDF File", f, file_name=f"Budget_Proposal_{sector_choice.replace(' ', '')}.pdf")
 
         st.write("---")
-        st.subheader("📊 The Kingdom’s Operational Matrix (2026 Simulation)")
+        st.subheader("📊 The Kingdom’s Operational Matrix — Validated Basket Architecture (Family of 6)")
         st.write("""
-        This matrix maps the 9-Sector Budgetary Baseline to the assigned groups. 
-        Each group carries systemic responsibility for their resource bandwidth.
+        This matrix reflects the **validated ₹6,000 monthly basket** for a family of six, grounded in 2001 Tamil Nadu market prices.
+        Each group's sector budget is locked to the baseline. The Monetary Board (Group 1) audits all allocations.
         """)
         
-        # Display baseline table
+        # Validated basket matrix — all 9 sectors sum to exactly Rs.6,000
         matrix_data = {
-            "Sector": ["1. Rice / Flour", "2. Spices", "3. Vegetables", "4. Fruits", "5. Proteins (Meat)", "6. Clothes", "7. Furniture / Utensils", "8. Fuel", "9. Electricity"],
-            "Assigned Group": ["Group 2 (Rice/Flour)", "Group 3 (Spices)", "Group 4 (Vegetables)", "Group 5 (Fruits)", "Group 10 (Meat)", "Group 9 (Clothes)", "Group 8 (Furniture)", "Group 7 (Fuel)", "Group 6 (Electricity)"],
-            "Baseline Budget": [1200, 200, 1500, 300, 1250, 400, 350, 520, 280],
-            "Min Bandwidth": [1000, 150, 1300, 200, 1100, 300, 300, 450, 200],
-            "Max Bandwidth": [1400, 250, 1700, 400, 1400, 500, 400, 600, 350]
+            "Sector": [
+                "1. Rice / Flour",
+                "2. Spices",
+                "3. Vegetables",
+                "4. Fruits",
+                "5. Meat",
+                "6. Clothes",
+                "7. Furniture / Utensils",
+                "8. Fuel (Diesel + Oil)",
+                "9. Electricity"
+            ],
+            "Assigned Group": [
+                "Group 2 — Rice/Flour",
+                "Group 3 — Spices",
+                "Group 4 — Vegetables",
+                "Group 5 — Fruits",
+                "Group 10 — Meat",
+                "Group 9 — Clothes",
+                "Group 8 — Furniture",
+                "Group 7 — Fuel",
+                "Group 6 — Electricity"
+            ],
+            "Baseline (₹/month)": [1200, 200, 1500, 300, 1250, 400, 350, 520, 280],
+            "Min Bandwidth (₹)": [ 960, 160, 1200, 240, 1000, 320, 280, 420, 220],
+            "Max Bandwidth (₹)": [1440, 240, 1800, 360, 1500, 480, 420, 620, 340]
         }
         df_matrix = pd.DataFrame(matrix_data)
         st.table(df_matrix)
-        st.caption("*Note: Group 1 (Consolidation) acts as the Monetary Board and audits all transactions but does not own a commodity sector budget.")
+        
+        # Grand total verification
+        grand_total = sum(matrix_data["Baseline (₹/month)"])
+        if grand_total == 6000:
+            st.success(f"✅ **Basket Total Verified: ₹{grand_total:,} / ₹6,000 — Architecture Locked.**")
+        else:
+            st.error(f"❌ Basket total mismatch: ₹{grand_total:,} ≠ ₹6,000. Check sector allocations!")
+        
+        st.caption("""
+        *Baseline prices are anchored to 2001 Tamil Nadu retail market data. 
+        Min/Max Bandwidth = ±20% flex for regional and seasonal GRI adjustments. 
+        Group 1 (Consolidation/Monetary Board) does not hold a commodity sector — they audit and approve all 9 proposals.
+        """)
 
         # Interactive Live Budget Governor
         st.write("---")
