@@ -411,21 +411,3 @@ def show_groups():
             st.error(f"❌ **Over-Budget: ₹{total_proposed:,.2f} / ₹6,000.00** (Surplus of ₹{total_proposed - 6000}). Group 1 must enforce budget cuts!")
         else:
             st.warning(f"⚠️ **Under-Budget: ₹{total_proposed:,.2f} / ₹6,000.00** (Deficit of ₹{6000 - total_proposed}). Allocate remaining funds to reserves or sectors.")
-
-        # Monday Launch Checklist Expanders
-        st.write("---")
-        st.subheader("📋 Monday Launch Checklist & Instructions")
-        with st.expander("1. Cabinet Appointments & Classroom Briefing"):
-            st.markdown("""
-            - **Appoint the Leaders:** Post/Share this list with the class. Every student carries structural accountability.
-            - **Emergency Meeting:** Brief **Group 1 (Consolidation)** 5 minutes early. Instruct them as the **Kingdom's Monetary Board** who must audit and approve final budgets.
-            """)
-        with st.expander("2. The Budget Proposal Challenge (30 Minutes)"):
-            st.markdown("""
-            - **Research & Negotiate:** Give the other 9 groups 30 minutes to justify their commodity budgets.
-            - **Proposal Phase:** Each group must submit and present their final budget requests within their min/max bandwidth to Group 1.
-            """)
-        with st.expander("3. Initialize Simulation"):
-            st.markdown("""
-            - **The Live Governor:** Group 1 inputs requests here live. When the balance hits exactly ₹6,000, initialization is complete!
-            """)
