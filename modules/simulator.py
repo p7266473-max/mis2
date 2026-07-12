@@ -37,13 +37,4 @@ def show_simulator():
             st.write("#### Output Calculations")
             final_price = base_price * gri * (w_r * w_s * w_t * w_e)
             st.metric("Computed Official Price", f"₹ {final_price:.2f}")
-            
-            st.write("#### The Closed-Loop Feedback Goal")
-            st.write("Desired Monthly living expenditure target: **₹ 6,000**")
-            estimated_basket_cost = final_price * 60  # assume 60 units of baseline commodities
-            st.metric("Estimated Household Basket Cost", f"₹ {estimated_basket_cost:.2f}")
-            
-            if estimated_basket_cost > 6000:
-                st.error("System Alert: Basket cost exceeds the ₹6,000 limit. The Monetary Authority must decrease KGI/GRI to restore purchasing power!")
-            else:
-                st.success("Normal Status: Basket cost is within the ₹6,000 limit. Household savings of ₹4,000 are protected.")
+
