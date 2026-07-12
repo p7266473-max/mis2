@@ -18,21 +18,38 @@ def show_monetary():
         
         # 2. Gold Calculator
         st.subheader("🧮 Gold/Treasury Calculator")
+        
+        GRAM_CONVERSIONS = {
+            "Troy Ounce": 31.1034768,
+            "Gram": 1.0,
+            "Kilogram": 1000.0,
+            "Tola": 11.6638038,
+            "Tael": 37.429
+        }
+
+        RATES_MAP = {
+            "USD": 1.0, "EUR": 0.9374, "GBP": 0.6814, "INR": 46.55, 
+            "PAK": 61.93, "CAD": 1.5037, "JPY": 117.28, "AUD": 1.8021, 
+            "SGD": 1.7338, "CHF": 1.639, "CNY": 8.2766, "MYR": 3.8,
+            "HKD": 7.7997, "BRL": 1.954, "MXN": 9.972, "NZD": 2.2472,
+            "NOK": 8.7675, "SEK": 9.505, "THB": 43.09, "ZAR": 7.825, "KRW": 1283.8
+        }
+
         c1, c2, c3 = st.columns(3)
         with c1:
-            gold_rate = st.number_input("Gold Rate (USD/oz)", value=603.77, key="calc_gold_rate")
+            gold_rate = st.number_input("Gold Rate (USD/Troy Ounce)", value=603.77, key="calc_gold_rate")
             weight = st.number_input("Weight Amount", value=1.0, key="calc_weight")
         with c2:
-            currency = st.selectbox("Currency", ["USD", "INR", "MYR", "EUR", "GBP", "JPY", "SGD", "AED", "SAR", "PKR", "CNY", "THB", "AUD", "CAD", "CHF", "HKD", "BRL", "MXN", "NZD", "ZAR"], key="calc_currency")
-            unit = st.selectbox("Weight Unit", ["Troy Ounce", "Gram", "Kilogram", "Tola", "Tael"], key="calc_unit")
+            currency = st.selectbox("Currency", list(RATES_MAP.keys()), index=list(RATES_MAP.keys()).index("USD"), key="calc_currency")
+            unit = st.selectbox("Weight Unit", list(GRAM_CONVERSIONS.keys()), key="calc_unit")
         with c3:
-            rates_map = {"USD": 1.0, "INR": 46.55, "EUR": 0.9374, "GBP": 0.6814, "PKR": 61.93, "MYR": 3.8, "CNY": 8.2766, "THB": 43.09, "CAD": 1.5037, "JPY": 117.28, "AUD": 1.8021, "SGD": 1.7338, "CHF": 1.639, "ZAR": 7.825, "KRW": 1283.8}
-            default_ex = rates_map.get(currency, 1.0)
+            default_ex = RATES_MAP.get(currency, 1.0)
             ex_rate = st.number_input("Exchange Rate (to USD)", value=default_ex, key="calc_ex_rate")
             
-        # Conversion Logic
-        conversion_map = {"Troy Ounce": 1.0, "Gram": 0.03215, "Kilogram": 32.1507, "Tola": 0.375, "Tael": 1.2034}
-        total_val = (gold_rate * (weight * conversion_map[unit])) * ex_rate
+        # Conversion Logic (Base-Gram Method)
+        usd_per_gram = gold_rate / GRAM_CONVERSIONS["Troy Ounce"]
+        total_grams = weight * GRAM_CONVERSIONS[unit]
+        total_val = (total_grams * usd_per_gram) * ex_rate
         
         st.info(f"### Total Calculated Value: {total_val:,.2f} {currency}")
         final_val = st.number_input("Final Adjusted Value (Manual Overwrite)", value=total_val, key="calc_final_val")
