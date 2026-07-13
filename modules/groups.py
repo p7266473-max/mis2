@@ -393,29 +393,29 @@ def show_groups():
 
         # Interactive Live Budget Governor
         st.write("---")
-        st.subheader("🎮 Monday Launch: Live Budget Governor")
+        st.subheader("🎮 Live Budget Governor")
         st.info("💡 **Monetary Board Challenge:** Group 1 (Consolidation) must audit and input requests from the other 9 groups. The total combined budget must equal exactly **₹6,785.63** to initialize the simulation!")
         
         bg_col1, bg_col2 = st.columns(2)
         with bg_col1:
             st.write("##### Input Proposed Budgets")
-            b_g2 = st.number_input("1. Rice / Flour (Group 2) [308-462]", 308, 462, 385, step=5, key="gov_b_g2")
-            b_g3 = st.number_input("2. Spices (Group 3) [196-294]", 196, 294, 245, step=1, key="gov_b_g3")
-            b_g4 = st.number_input("3. Vegetables (Group 4) [547-821]", 547, 821, 684, step=5, key="gov_b_g4")
-            b_g5 = st.number_input("4. Fruits (Group 5) [581-871]", 581, 871, 726, step=5, key="gov_b_g5")
-            b_g10 = st.number_input("5. Proteins (Meat) (Group 10) [1064-1596]", 1064, 1596, 1330, step=10, key="gov_b_g10")
+            b_g2 = st.number_input("1. Rice / Flour (Group 2) [308.00-462.00]", 308.00, 462.00, 385.00, step=5.00, key="gov_b_g2")
+            b_g3 = st.number_input("2. Spices (Group 3) [196.27-294.41]", 196.27, 294.41, 245.34, step=1.00, key="gov_b_g3")
+            b_g4 = st.number_input("3. Vegetables (Group 4) [547.43-821.15]", 547.43, 821.15, 684.29, step=5.00, key="gov_b_g4")
+            b_g5 = st.number_input("4. Fruits (Group 5) [580.80-871.20]", 580.80, 871.20, 726.00, step=5.00, key="gov_b_g5")
+            b_g10 = st.number_input("5. Proteins (Meat) (Group 10) [1064.00-1596.00]", 1064.00, 1596.00, 1330.00, step=10.00, key="gov_b_g10")
         with bg_col2:
             st.write("##### Input Proposed Budgets (Cont.)")
-            b_g9 = st.number_input("6. Clothes (Group 9) [240-360]", 240, 360, 300, step=5, key="gov_b_g9")
-            b_g8 = st.number_input("7. Furniture / Utensils (Group 8) [304-456]", 304, 456, 380, step=5, key="gov_b_g8")
-            b_g7 = st.number_input("8. Fuel (Group 7) [588-882]", 588, 882, 735, step=5, key="gov_b_g7")
-            b_g6 = st.number_input("9. Electricity (Group 6) [1600-2400]", 1600, 2400, 2000, step=20, key="gov_b_g6")
+            b_g9 = st.number_input("6. Clothes (Group 9) [240.00-360.00]", 240.00, 360.00, 300.00, step=5.00, key="gov_b_g9")
+            b_g8 = st.number_input("7. Furniture / Utensils (Group 8) [304.00-456.00]", 304.00, 456.00, 380.00, step=5.00, key="gov_b_g8")
+            b_g7 = st.number_input("8. Fuel (Group 7) [588.00-882.00]", 588.00, 882.00, 735.00, step=5.00, key="gov_b_g7")
+            b_g6 = st.number_input("9. Electricity (Group 6) [1600.00-2400.00]", 1600.00, 2400.00, 2000.00, step=20.00, key="gov_b_g6")
 
         total_proposed = b_g2 + b_g3 + b_g4 + b_g5 + b_g10 + b_g9 + b_g8 + b_g7 + b_g6
         
         # Display progress and validation status
         st.write("### Total Proposed Budget Balance")
-        if abs(total_proposed - 6785.63) < 2.0:
+        if abs(total_proposed - 6785.63) < 0.1:
             st.success(f"🎉 **Perfect Balance achieved: ₹{total_proposed:,.2f} / ₹6,785.63!**")
             st.balloons()
             st.markdown("""
