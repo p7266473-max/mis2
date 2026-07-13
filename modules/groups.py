@@ -80,7 +80,7 @@ def show_groups():
             "name": "Group 1: Consolidation",
             "sector": "Consolidation",
             "lead": "Thanishvel Mogam",
-            "members": ["Thanishvel Mogam", "Jeremy Matthews Thomas", "Ajwaad Mahbub Karim", "Intan Syazana"],
+            "members": ["Thanishvel Mogam", "Jeremy Mattews Thomas", "Ajwaad Mahbub Karim", "Intan Syazana"],
             "icon": "💼",
             "resource": "Gold Standard & System Ledger Reconciliation"
         },
@@ -97,8 +97,8 @@ def show_groups():
             "id": 3,
             "name": "Group 3: Spices",
             "sector": "Spices",
-            "lead": "Fahim Sahriar Ponno",
-            "members": ["Fahim Sahriar Ponno", "Eithi Noor Jahan", "Rifat Md", "Joy Chandra Das", "Zannat Zamman"],
+            "lead": "Fahim Sahriar Punno",
+            "members": ["Fahim Sahriar Punno", "Eithi Nur Jahan", "Rifat Md", "Joy Chandra Das", "Zannat Zaman"],
             "icon": "🌶️",
             "resource": "Imported & Local Herb/Spice Logistics"
         },
@@ -107,7 +107,7 @@ def show_groups():
             "name": "Group 4: Vegetables",
             "sector": "Vegetables",
             "lead": "Farhad Niloy",
-            "members": ["Raj Malo (Himangshu)", "Farhad Niloy", "Sagor Mollah", "Shawon Sorif"],
+            "members": ["HIMANGSHU RAJ MALO", "Farhad Niloy", "Sagor Mollah", "Shawon Sorif"],
             "icon": "🥦",
             "resource": "Perishable Crop Harvests & Cold Storage Logs"
         },
@@ -125,7 +125,7 @@ def show_groups():
             "name": "Group 6: Electricity",
             "sector": "Electricity",
             "lead": "Arpita Roy Joya",
-            "members": ["Arpita Roy Joya", "Tanvire Anwaro Ivan", "Rahi Al Md Jameal Kawsar", "Sohanur Rahman"],
+            "members": ["Arpita Roy Joya", "TANVIR ANWAR IVAN", "RAHI MD JAME UL KAWSAR", "Sohanur Rahman"],
             "icon": "⚡",
             "resource": "Solar Arrays, Battery Banks, & Scheduled Server Downtimes"
         },
@@ -134,7 +134,7 @@ def show_groups():
             "name": "Group 7: Fuel",
             "sector": "Fuel",
             "lead": "Sofiq",
-            "members": ["Salam", "Utsa", "Sofiq", "Zaman Uddin Sarker", "Sayed"],
+            "members": ["Salam", "Utsa", "Sofiq", "Zaman Uddin Sarker", "Md. Abu sayed"],
             "icon": "⛽",
             "resource": "Generators & Biofuel Reserves Inventory"
         },
