@@ -4,65 +4,80 @@ import pandas as pd
 # Standardized commodity item catalogs for all sectors
 COMMODITY_CATALOG = {
     "Rice / Flour": {
-        "Rice (55 kg)": 880,
-        "Flour (Wheat/Atta) (10 kg)": 320
+        "Rice (20 kg)": 320.00,
+        "Flour (5 kg)": 65.00
     },
     "Spices": {
-        "Turmeric Powder (200g)": 20,
-        "Chili Powder (500g)": 45,
-        "Coriander Powder (500g)": 45,
-        "Mustard Seeds (200g)": 15,
-        "Cumin Seeds (100g)": 15,
-        "Fenugreek Seeds (100g)": 15,
-        "Asafoetida (Hing) (50g)": 20,
-        "Tamarind (500g)": 25
+        "Garlic (Fresh) (1.2 kg)": 37.15,
+        "Ginger (Fresh) (1.2 kg)": 46.44,
+        "Chili Powder (Morich) (1.0 kg)": 61.92,
+        "Cumin (Jeera) (250g)": 23.22,
+        "Coriander Powder (Dhaniya) (250g)": 11.61,
+        "Turmeric Powder (Holud) (300g)": 16.25,
+        "Black Pepper (Gol Morich) (50g)": 11.61,
+        "Cardamom (Elachi) (50g)": 23.22,
+        "Cinnamon (Daruchini) (50g)": 6.19,
+        "Cloves (Labango) (25g)": 7.74
     },
     "Vegetables": {
-        "Potato (12 kg)": 240,
-        "Onion (10 kg)": 250,
-        "Tomato (8 kg)": 240,
-        "Beetroot (4 kg)": 120,
-        "Carrot (4 kg)": 140,
-        "Beans (4 kg)": 160,
-        "Radish (4 kg)": 80,
-        "Cabbage (4 kg)": 100,
-        "Bitter Gourd (3 kg)": 90,
-        "Soya Beans (2 kg)": 80
+        "Potato (15 kg)": 116.11,
+        "Onion (10 kg)": 139.33,
+        "Pumpkin (6 kg)": 46.44,
+        "Cabbage (5 kg)": 46.44,
+        "Eggplant (5 kg)": 69.67,
+        "Carrot (4 kg)": 61.93,
+        "Beetroot (2 kg)": 34.06,
+        "Tomato (6 kg)": 92.89,
+        "Lady Fingers (4 kg)": 49.54,
+        "Radish (3 kg)": 27.87
     },
     "Fruits": {
-        "Bananas (12 kg)": 108,
-        "Papaya (6 kg)": 66,
-        "Watermelon (5 kg)": 45,
-        "Guava (3 kg)": 51,
-        "Lime/Citrus (1 kg)": 30
+        "Apples (15 kg)": 450.00,
+        "Oranges (12 kg)": 180.00,
+        "Papaya (8 kg)": 96.00,
+        "Banana (per pc)": 4.00,
+        "Jackfruit (per kg)": 10.00,
+        "Mango (per kg)": 15.00,
+        "Pineapple (per kg)": 15.00,
+        "Watermelon (per kg)": 6.00,
+        "Guava (per kg)": 10.00,
+        "Orange (per kg)": 15.00,
+        "Lemon (per kg)": 10.00
     },
     "Meat": {
-        "Chicken (8 kg)": 480,
-        "Fish (5 kg)": 350,
-        "Mutton (3 kg)": 420
+        "Chicken (10 kg)": 600.00,
+        "Fish (6 kg)": 300.00,
+        "Lamb (4 kg)": 400.00,
+        "Tilapia (per kg)": 50.00,
+        "Catfish (per kg)": 40.00,
+        "Carp (per kg)": 35.00,
+        "Milkfish (per kg)": 35.00,
+        "Snakehead (per kg)": 60.00
     },
     "Clothes": {
-        "Sarees/Dhotis — Monthly Portion (2 pcs/qtr @ ₹250)": 167,
-        "Children's Sets — Monthly Portion (4 sets/qtr @ ₹75)": 100,
-        "Innerwear/Misc — Monthly Portion (6 sets/qtr @ ₹30)": 60,
-        "Tailoring/Repairs — Monthly Portion (₹100/qtr)": 33,
-        "Hygiene & Laundry Misc — Monthly Buffer": 40
+        "Husband Shirt (Monthly portion)": 67.00,
+        "Wife Skirt/Dress (Monthly portion)": 67.00,
+        "Grandfather Panjabi/Shirt (Monthly portion)": 50.00,
+        "Grandmother Saree/Dress (Monthly portion)": 50.00,
+        "Boy T-shirt + Shorts (Monthly portion)": 33.00,
+        "Girl Dress (Monthly portion)": 33.00
     },
     "Furniture / Utensils": {
-        "Dining Table — Monthly Depreciation (₹1,200/24m)": 50,
-        "Chairs ×6 — Monthly Depreciation (₹1,200/24m)": 50,
-        "Cots ×3 — Monthly Depreciation (₹2,400/24m)": 100,
-        "Cupboard/Storage — Monthly Depreciation (₹2,000/24m)": 83,
-        "Kitchen Utensils — Monthly Depreciation (₹1,500/24m)": 62,
-        "Maintenance & Repair Reserve — Monthly": 5
+        "Chairs (6 pcs)": 60.00,
+        "Table (1 pc)": 40.00,
+        "Bed (2 pcs)": 160.00,
+        "Fan (2 pcs)": 120.00
     },
     "Fuel": {
-        "Cooking Oil (3.5 Liters @ ₹45/L)": 160,
-        "Diesel (20 Liters @ ₹18/L)": 360
+        "Petrol (12 ltr)": 169.19,
+        "Diesel (9 ltr)": 188.30,
+        "Kerosene (10 ltr)": 141.00,
+        "Mustard Oil (2 ltr)": 145.54,
+        "Raw Cow Fat (2 kg)": 36.39,
+        "Raw Sheep Fat (2 kg)": 54.58
     },
     "Electricity": {
-        "Electricity Tariff — Baseline (70-100 kWh @ ₹1.50/unit)": 180,
-        "Kingdom Grid Upgrade Safety Margin": 100
+        "Electricity (250 kWh @ ₹8/unit)": 2000.00
     }
 }
 
@@ -98,7 +113,7 @@ def show_groups():
             "name": "Group 3: Spices",
             "sector": "Spices",
             "lead": "Fahim Sahriar Punno",
-            "members": ["Fahim Sahriar Punno", "Eithi Nur Jahan", "Rifat Md", "Joy Chandra Das", "Zannat Zaman"],
+            "members": ["Fahim Sahriar Punno", "Md Rifat", "Eithi Nur Jahan", "Zannat Zaman", "Joy Chandra Das"],
             "icon": "🌶️",
             "resource": "Imported & Local Herb/Spice Logistics"
         },
@@ -106,8 +121,8 @@ def show_groups():
             "id": 4,
             "name": "Group 4: Vegetables",
             "sector": "Vegetables",
-            "lead": "Farhad Niloy",
-            "members": ["HIMANGSHU RAJ MALO", "Farhad Niloy", "Sagor Mollah", "Shawon Sorif"],
+            "lead": "MOHAMMAD FARHAD HASAN NILOY",
+            "members": ["HIMANGSHU RAJ MALO", "SHAWON SORIF", "HASAN MD SAKIB", "MD SAGOR MOLLAH", "MOHAMMAD FARHAD HASAN NILOY"],
             "icon": "🥦",
             "resource": "Perishable Crop Harvests & Cold Storage Logs"
         },
@@ -115,8 +130,8 @@ def show_groups():
             "id": 5,
             "name": "Group 5: Fruits",
             "sector": "Fruits",
-            "lead": "Jishan Ahamed Himel",
-            "members": ["Akter Khusbu", "Md Shahik Khan Hemel", "Md Rimon", "Jishan Ahamed Himel", "Biraj Sarker"],
+            "lead": "Jishan Ahmed Himel",
+            "members": ["Akter Khusbu", "Shahik khan Himel", "MD Rimon", "Jishan Ahmed Himel", "Biraj Sarker"],
             "icon": "🍎",
             "resource": "Orchard Production & Distribution Routing"
         },
@@ -124,8 +139,8 @@ def show_groups():
             "id": 6,
             "name": "Group 6: Electricity",
             "sector": "Electricity",
-            "lead": "Arpita Roy Joya",
-            "members": ["Arpita Roy Joya", "TANVIR ANWAR IVAN", "RAHI MD JAME UL KAWSAR", "Sohanur Rahman"],
+            "lead": "Arpita Roy",
+            "members": ["Arpita Roy", "Tanvir anwar Ivan", "Rahi Jame UL kawser", "Islam siyam"],
             "icon": "⚡",
             "resource": "Solar Arrays, Battery Banks, & Scheduled Server Downtimes"
         },
@@ -133,8 +148,8 @@ def show_groups():
             "id": 7,
             "name": "Group 7: Fuel",
             "sector": "Fuel",
-            "lead": "Sofiq",
-            "members": ["Salam", "Utsa", "Sofiq", "Zaman Uddin Sarker", "Md. Abu sayed"],
+            "lead": "MD.Shofiqul Islam",
+            "members": ["MD.Shofiqul Islam", "Abu sayed", "Mansur", "Salam", "Utsha"],
             "icon": "⛽",
             "resource": "Generators & Biofuel Reserves Inventory"
         },
@@ -142,8 +157,8 @@ def show_groups():
             "id": 8,
             "name": "Group 8: Furniture / Utensils",
             "sector": "Furniture / Utensils",
-            "lead": "Hasan Murad",
-            "members": ["Abdul Azim", "Hasan Murad", "Tanjil", "Wazed", "Rabbi"],
+            "lead": "Murad hasan",
+            "members": ["Murad hasan", "Abdul Azim", "Wazed", "Tanjil hossain", "Jihad rabbi"],
             "icon": "🪑",
             "resource": "Domestic Living Goods & Asset Lifecycles"
         },
@@ -246,17 +261,17 @@ def show_groups():
         
         st.markdown(f"### 💰 Monthly Basket Allocation — **{sector_choice}**: **₹{total_cost:,.2f}**")
         
-        # Min/max boundaries check (±~17% flex around baseline)
+        # Min/max boundaries check (±~20% flex around baseline)
         boundaries = {
-            "Rice / Flour":        (1000, 1400),
-            "Spices":              (150,  250),
-            "Vegetables":          (1300, 1700),
-            "Fruits":              (200,  400),
-            "Meat":                (1100, 1400),
-            "Clothes":             (300,  500),
-            "Furniture / Utensils":(300,  400),
-            "Fuel":                (450,  600),
-            "Electricity":         (200,  350)
+            "Rice / Flour":        (308, 462),
+            "Spices":              (196, 294),
+            "Vegetables":          (547, 821),
+            "Fruits":              (581, 871),
+            "Meat":                (1064, 1596),
+            "Clothes":             (240, 360),
+            "Furniture / Utensils":(304, 456),
+            "Fuel":                (588, 882),
+            "Electricity":         (1600, 2400)
         }
         
         min_b, max_b = boundaries.get(sector_choice, (0, 99999))
@@ -332,7 +347,7 @@ def show_groups():
         Each group's sector budget is locked to the baseline. The Monetary Board (Group 1) audits all allocations.
         """)
         
-        # Validated basket matrix — all 9 sectors sum to exactly Rs.6,000
+        # Validated basket matrix — all 9 sectors sum to exactly Rs.6,785.63
         matrix_data = {
             "Sector": [
                 "1. Rice / Flour",
@@ -356,22 +371,22 @@ def show_groups():
                 "Group 7 — Fuel",
                 "Group 6 — Electricity"
             ],
-            "Baseline (₹/month)": [1200, 200, 1500, 300, 1250, 400, 350, 520, 280],
-            "Min Bandwidth (₹)": [ 960, 160, 1200, 240, 1000, 320, 280, 420, 220],
-            "Max Bandwidth (₹)": [1440, 240, 1800, 360, 1500, 480, 420, 620, 340]
+            "Baseline (₹/month)": [385.00, 245.34, 684.29, 726.00, 1330.00, 300.00, 380.00, 735.00, 2000.00],
+            "Min Bandwidth (₹)": [308.00, 196.27, 547.43, 580.80, 1064.00, 240.00, 304.00, 588.00, 1600.00],
+            "Max Bandwidth (₹)": [462.00, 294.41, 821.15, 871.20, 1596.00, 360.00, 456.00, 882.00, 2400.00]
         }
         df_matrix = pd.DataFrame(matrix_data)
         st.table(df_matrix)
         
         # Grand total verification
         grand_total = sum(matrix_data["Baseline (₹/month)"])
-        if grand_total == 6000:
-            st.success(f"✅ **Basket Total Verified: ₹{grand_total:,} / ₹6,000 — Architecture Locked.**")
+        if abs(grand_total - 6785.63) < 0.1:
+            st.success(f"✅ **Basket Total Verified: ₹{grand_total:,.2f} / ₹6,785.63 — Architecture Locked.**")
         else:
-            st.error(f"❌ Basket total mismatch: ₹{grand_total:,} ≠ ₹6,000. Check sector allocations!")
+            st.error(f"❌ Basket total mismatch: ₹{grand_total:,.2f} ≠ ₹6,785.63. Check sector allocations!")
         
         st.caption("""
-        *Baseline prices are anchored to 2001 Tamil Nadu retail market data. 
+        *Baseline prices are anchored to 2001 post-apocalyptic base pricing data. 
         Min/Max Bandwidth = ±20% flex for regional and seasonal GRI adjustments. 
         Group 1 (Consolidation/Monetary Board) does not hold a commodity sector — they audit and approve all 9 proposals.
         """)
@@ -379,35 +394,35 @@ def show_groups():
         # Interactive Live Budget Governor
         st.write("---")
         st.subheader("🎮 Monday Launch: Live Budget Governor")
-        st.info("💡 **Monetary Board Challenge:** Group 1 (Consolidation) must audit and input requests from the other 9 groups. The total combined budget must equal exactly **₹6,000** to initialize the simulation!")
+        st.info("💡 **Monetary Board Challenge:** Group 1 (Consolidation) must audit and input requests from the other 9 groups. The total combined budget must equal exactly **₹6,785.63** to initialize the simulation!")
         
         bg_col1, bg_col2 = st.columns(2)
         with bg_col1:
             st.write("##### Input Proposed Budgets")
-            b_g2 = st.number_input("1. Rice / Flour (Group 2) [1000-1400]", 1000, 1400, 1200, step=10, key="gov_b_g2")
-            b_g3 = st.number_input("2. Spices (Group 3) [150-250]", 150, 250, 200, step=10, key="gov_b_g3")
-            b_g4 = st.number_input("3. Vegetables (Group 4) [1300-1700]", 1300, 1700, 1500, step=10, key="gov_b_g4")
-            b_g5 = st.number_input("4. Fruits (Group 5) [200-400]", 200, 400, 300, step=10, key="gov_b_g5")
-            b_g10 = st.number_input("5. Proteins (Meat) (Group 10) [1100-1400]", 1100, 1400, 1250, step=10, key="gov_b_g10")
+            b_g2 = st.number_input("1. Rice / Flour (Group 2) [308-462]", 308, 462, 385, step=5, key="gov_b_g2")
+            b_g3 = st.number_input("2. Spices (Group 3) [196-294]", 196, 294, 245, step=1, key="gov_b_g3")
+            b_g4 = st.number_input("3. Vegetables (Group 4) [547-821]", 547, 821, 684, step=5, key="gov_b_g4")
+            b_g5 = st.number_input("4. Fruits (Group 5) [581-871]", 581, 871, 726, step=5, key="gov_b_g5")
+            b_g10 = st.number_input("5. Proteins (Meat) (Group 10) [1064-1596]", 1064, 1596, 1330, step=10, key="gov_b_g10")
         with bg_col2:
             st.write("##### Input Proposed Budgets (Cont.)")
-            b_g9 = st.number_input("6. Clothes (Group 9) [300-500]", 300, 500, 400, step=10, key="gov_b_g9")
-            b_g8 = st.number_input("7. Furniture / Utensils (Group 8) [300-400]", 300, 400, 350, step=10, key="gov_b_g8")
-            b_g7 = st.number_input("8. Fuel (Group 7) [450-600]", 450, 600, 520, step=10, key="gov_b_g7")
-            b_g6 = st.number_input("9. Electricity (Group 6) [200-350]", 200, 350, 280, step=10, key="gov_b_g6")
+            b_g9 = st.number_input("6. Clothes (Group 9) [240-360]", 240, 360, 300, step=5, key="gov_b_g9")
+            b_g8 = st.number_input("7. Furniture / Utensils (Group 8) [304-456]", 304, 456, 380, step=5, key="gov_b_g8")
+            b_g7 = st.number_input("8. Fuel (Group 7) [588-882]", 588, 882, 735, step=5, key="gov_b_g7")
+            b_g6 = st.number_input("9. Electricity (Group 6) [1600-2400]", 1600, 2400, 2000, step=20, key="gov_b_g6")
 
         total_proposed = b_g2 + b_g3 + b_g4 + b_g5 + b_g10 + b_g9 + b_g8 + b_g7 + b_g6
         
         # Display progress and validation status
         st.write("### Total Proposed Budget Balance")
-        if total_proposed == 6000:
-            st.success(f"🎉 **Perfect Balance achieved: ₹{total_proposed:,.2f} / ₹6,000.00!**")
+        if abs(total_proposed - 6785.63) < 2.0:
+            st.success(f"🎉 **Perfect Balance achieved: ₹{total_proposed:,.2f} / ₹6,785.63!**")
             st.balloons()
             st.markdown("""
             ### 🚀 Simulation Initialized!
             Cabinet Appointments are officially locked. High Command Node Online.
             """)
-        elif total_proposed > 6000:
-            st.error(f"❌ **Over-Budget: ₹{total_proposed:,.2f} / ₹6,000.00** (Surplus of ₹{total_proposed - 6000}). Group 1 must enforce budget cuts!")
+        elif total_proposed > 6785.63:
+            st.error(f"❌ **Over-Budget: ₹{total_proposed:,.2f} / ₹6,785.63** (Surplus of ₹{total_proposed - 6785.63:.2f}). Group 1 must enforce budget cuts!")
         else:
-            st.warning(f"⚠️ **Under-Budget: ₹{total_proposed:,.2f} / ₹6,000.00** (Deficit of ₹{6000 - total_proposed}). Allocate remaining funds to reserves or sectors.")
+            st.warning(f"⚠️ **Under-Budget: ₹{total_proposed:,.2f} / ₹6,785.63** (Deficit of ₹{6785.63 - total_proposed:.2f}). Allocate remaining funds to reserves or sectors.")
