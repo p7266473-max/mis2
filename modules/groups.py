@@ -422,6 +422,8 @@ def show_groups():
             ### 🚀 Simulation Initialized!
             Cabinet Appointments are officially locked. High Command Node Online.
             """)
+        elif total_proposed < 6000.0:
+            st.success(f"💚 **Positive Budget: ₹{total_proposed:,.2f} / ₹6,785.63** (Excellent! Under ₹6,000 threshold, signaling high resource savings and positivity!)")
         elif total_proposed > 6785.63:
             st.error(f"❌ **Over-Budget: ₹{total_proposed:,.2f} / ₹6,785.63** (Surplus of ₹{total_proposed - 6785.63:.2f}). Group 1 must enforce budget cuts!")
         else:
